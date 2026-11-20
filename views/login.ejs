@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - IT Helpdesk Ticketing System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="auth-card">
+      <h1>Login</h1>
+      <p class="subtitle">Welcome back! Please sign in.</p>
+
+      <% if (error) { %>
+        <div class="flash error"><%= error %></div>
+      <% } %>
+      <% if (login) { %>
+        <div class="flash success">Logged in successfully!</div>
+      <% } %>
+
+      <form method="POST" action="/login" id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autofocus autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Sign In</button>
+      </form>
+
+      <p class="login-link">Don't have an account? <a href="/register">Register here</a></p>
+
+      <div class="demo-creds">
+        <p><strong>Demo Accounts:</strong></p>
+        <p><code>admin@test.com</code> / <code>admin123</code> (Technician)</p>
+        <p><code>user@test.com</code> / <code>user123</code> (User)</p>
+      </div>
+    </div>
+  </div>
+  <script src="/js/app.js"></script>
+</body>
+</html>

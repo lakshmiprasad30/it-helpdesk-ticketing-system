@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Tickets - IT Helpdesk Ticketing System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">IT Helpdesk</div>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/tickets">Tickets</a>
+      <a href="/logout" class="btn btn-outline">Logout</a>
+    </div>
+  </nav>
+
+  <div class="tickets-page">
+    <header class="page-header">
+      <h1>All Tickets</h1>
+      <p>View, search, and filter helpdesk tickets.</p>
+    </header>
+
+    <div class="filters">
+      <form method="GET" action="/tickets" class="filter-form">
+        <select name="status">
+          <option value="">All Statuses</option>
+          <option value="open" <%= status === 'open' ? 'selected' : '' %>>Open</option>
+          <option value="in_progress" <%= status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+          <option value="resolved" <%= status === 'resolved' ? 'selected' : '' %>>Resolved</option>
+          <option value="closed" <%= status === 'closed' ? 'selected' : '' %>>Closed</option>
+        </select>
+
+        <select name="category">
+          <option value="">All Categories</option>
+          <% categories.forEach(c => { %>
+            <option value="<%= c %>" <%= category === c ? 'selected' : '' %>><%= c.charAt(0).toUpperCase() + c.slice(1) %></option>
+          <% }); %>
+        </select>
+
+        <input type="text" name="search" placeholder="Search tickets..." value="<%= search || '' %>">
+        <button class="btn btn-primary" type="submit">Filter</button>
+        <a href="/tickets" class="btn btn-outline">Clear</a>
+      </form>
+    </div>
+
+    <div class="actions-bar">
+      <% if (isTechnician) { %>
+        <a href="/tickets/new" class="btn btn-primary">+ New Ticket</a>
+      <% } %>
+    </div>
+
+    <% if (error) { %>
+      <div class="flash error"><%= error %></div>
+    <% } %>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (tickets.length === 0) { %>
+            <tr>
+              <td colspan="6" class="empty">No tickets found.</td>
+            </tr>
+          <% } else { %>
+            <% tickets.forEach(ticket => { %>
+              <tr class="<%= ticket.status %>">
+                <td><a href="/tickets/<%= ticket.id %>"><%= ticket.title %></a></td>
+                <td><%= ticket.category %></td>
+                <td><span class="priority-badge priority-<%= ticket.priority %>"><%= ticket.priority %></span></td>
+                <td><span class="status-badge status-<%= ticket.status %>"><%= ticket.status %></span></td>
+                <td><%= new Date(ticket.createdAt).toLocaleDateString() %></td>
+                <td><a href="/tickets/<%= ticket.id %>" class="btn btn-sm">View</a></td>
+              </tr>
+            <% }); %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

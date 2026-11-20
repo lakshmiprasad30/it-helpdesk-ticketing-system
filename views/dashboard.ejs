@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - IT Helpdesk Ticketing System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">IT Helpdesk</div>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/tickets">Tickets</a>
+      <a href="/logout" class="btn btn-outline">Logout</a>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <header class="page-header">
+      <h1>Welcome, <%= userName || 'User' %></h1>
+      <p>Here's an overview of your IT helpdesk activity.</p>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value"><%= stats.total %></div>
+        <div class="stat-label">Total Tickets</div>
+      </div>
+      <div class="stat-card stat-open">
+        <div class="stat-value"><%= stats.open %></div>
+        <div class="stat-label">Open</div>
+      </div>
+      <div class="stat-card stat-progress">
+        <div class="stat-value"><%= stats.inProgress %></div>
+        <div class="stat-label">In Progress</div>
+      </div>
+      <div class="stat-card stat-resolved">
+        <div class="stat-value"><%= stats.resolved %></div>
+        <div class="stat-label">Resolved</div>
+      </div>
+      <div class="stat-card stat-closed">
+        <div class="stat-value"><%= stats.closed %></div>
+        <div class="stat-label">Closed</div>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>My Tickets</h2>
+      <% if (myTickets.length === 0) { %>
+        <p class="empty">You haven't created or been assigned any tickets yet.</p>
+      <% } else { %>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% myTickets.forEach(ticket => { %>
+                <tr class="<%= ticket.status %>">
+                  <td><a href="/tickets/<%= ticket.id %>"><%= ticket.title %></a></td>
+                  <td><%= ticket.category %></td>
+                  <td><span class="status-badge status-<%= ticket.status %>"><%= ticket.status %></span></td>
+                  <td><%= new Date(ticket.createdAt).toLocaleDateString() %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+
+    <section class="card">
+      <h2>Open Tickets Awaiting Assignment</h2>
+      <% if (openTickets.length === 0) { %>
+        <p class="empty">No open tickets waiting for assignment right now.</p>
+      <% } else { %>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% openTickets.forEach(ticket => { %>
+                <tr class="<%= ticket.status %>">
+                  <td><a href="/tickets/<%= ticket.id %>"><%= ticket.title %></a></td>
+                  <td><%= ticket.category %></td>
+                  <td><span class="priority-badge priority-<%= ticket.priority %>"><%= ticket.priority %></span></td>
+                  <td><%= new Date(ticket.createdAt).toLocaleDateString() %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+  </div>
+</body>
+</html>

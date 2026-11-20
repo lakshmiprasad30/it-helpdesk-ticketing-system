@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= ticket.title %> - IT Helpdesk Ticketing System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">IT Helpdesk</div>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/tickets">Tickets</a>
+      <a href="/logout" class="btn btn-outline">Logout</a>
+    </div>
+  </nav>
+
+  <div class="ticket-detail-page">
+    <header class="page-header">
+      <h1><%= ticket.title %></h1>
+      <p class="ticket-meta">
+        <span>Created: <%= new Date(ticket.createdAt).toLocaleString() %></span>
+        <span>Updated: <%= new Date(ticket.updatedAt).toLocaleString() %></span>
+        <span>By: <%= users && users.find(u => u.id === ticket.requestorId) ? users.find(u => u.id === ticket.requestorId).name : 'Unknown' %></span>
+      </p>
+    </header>
+
+    <div class="badge-row">
+      <span class="status-badge status-<%= ticket.status %>"><%= ticket.status %></span>
+      <span class="priority-badge priority-<%= ticket.priority %>"><%= ticket.priority %></span>
+      <span class="category-badge"><%= ticket.category %></span>
+    </div>
+
+    <div class="ticket-body">
+      <h2>Description</h2>
+      <p><%- ticket.description %></p>
+    </div>
+
+    <div class="ticket-meta-box">
+      <h3>Ticket Information</h3>
+      <ul class="meta-list">
+        <li><strong>ID:</strong> <%= ticket.id %></li>
+        <li><strong>Category:</strong> <%= ticket.category %></li>
+        <li><strong>Priority:</strong> <%= ticket.priority %></li>
+        <li><strong>Status:</strong> <%= ticket.status %></li>
+        <li><strong>Created:</strong> <%= new Date(ticket.createdAt).toLocaleString() %></li>
+        <li><strong>Updated:</strong> <%= new Date(ticket.updatedAt).toLocaleString() %></li>
+      </ul>
+    </div>
+
+    <div class="comments-section" id="comments">
+      <h2>Discussion (<%= comments.length %>)</h2>
+
+      <% if (comments.length === 0) { %>
+        <p class="empty">No comments yet. Be the first to add a comment!</p>
+      <% } else { %>
+        <div class="comments-list">
+          <% comments.forEach(comment => { %>
+            <div class="comment-item">
+              <div class="comment-header">
+                <span class="comment-author"><%= comment.userName %></span>
+                <span class="comment-date"><%= new Date(comment.createdAt).toLocaleString() %></span>
+              </div>
+              <p class="comment-text"><%= comment.text %></p>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+
+    <% if (canEdit) { %>
+      <div class="comment-form-wrap" id="comment-form-wrap">
+        <h3>Add a Comment</h3>
+        <form method="POST" action="/tickets/<%= ticket.id %>/comments" class="form-card" id="comment-form">
+          <div class="form-group">
+            <textarea name="text" rows="3" placeholder="Add a comment or update on progress..." required></textarea>
+          </div>
+          <div class="form-actions">
+            <a href="/tickets" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+          </div>
+        </form>
+      </div>
+    <% } else { %>
+      <div class="info-banner">
+        Only technicians can post comments on this ticket.
+      </div>
+    <% } %>
+
+    <div class="actions-bar">
+      <% if (canEdit) { %>
+        <form method="POST" action="/tickets/<%= ticket.id %>/status" class="inline-form">
+          <select name="status" onchange="this.form.submit()">
+            <option value="open" <%= ticket.status === 'open' ? 'selected' : '' %>>Open</option>
+            <option value="in_progress" <%= ticket.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="resolved" <%= ticket.status === 'resolved' ? 'selected' : '' %>>Resolved</option>
+            <option value="closed" <%= ticket.status === 'closed' ? 'selected' : '' %>>Closed</option>
+          </select>
+        </form>
+      <% } %>
+      <a href="/tickets" class="btn btn-outline">Back to Tickets</a>
+    </div>
+  </div>
+</body>
+</html>
